@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>09_Vue实例_生命周期</title>
+</head>
+<body>
+<!--
+1. vue对象的生命周期
+  1). 初始化显示
+    * beforeCreate()
+    * created()
+    * beforeMount()
+    * mounted()
+  2). 更新状态
+    * beforeUpdate()
+    * updated()
+  3). 销毁vue实例: vm.$destory()
+    * beforeDestory()
+    * destoryed()
+2. 常用的生命周期方法
+  created()/mounted(): 发送ajax请求, 启动定时器等异步任务
+  beforeDestory(): 做收尾工作, 如: 清除定时器
+-->
+
+<div id="test">
+  <button @click="destroyVM">destroy vue</button>
+  <p v-show="isShow">atguigu.com</p>
+  <!-- ref相当于id, 用来标识这个标签的 -->
+  <p ref="text">{{isShow ? '真' : '假'}}</p>
+  <p ref="text2">{{'abc'}}</p>
+  <p>{{'abc'}}</p>
+  <p>{{'abc'}}</p>
+  <p>{{'abc'}}</p>
+  <p>{{'abc'}}</p>
+</div>
+
+<script type="text/javascript" src="../js/vue.js"></script>
+<script type="text/javascript">
+  new Vue({
+    el: '#test',
+
+    data() {
+      return {
+        isShow: true
+      }
+    },
+
+    /* 
+    beforeCreate(): vm对象一旦创建就立即调用, 此时通过vm得不到data中的数据
+    */
+    beforeCreate() {
+      console.log('beforeCreate()', this.isShow) // isShow能不能得到?
+    },
+
+    /* 实现数据代理/数据绑定/事件初始值 */
+
+    /* 
+    created(): 实现数据代理/数据绑定都已经准备好了, 此时通过vm得到data中的数据
+    */
+    created() {
+      console.log('created()', this.isShow) // isShow能不能得到?
+      // this.isShow = false
+    },
+
+    /* 解析模板: 在内存中生成DOM结构(已经解析好的)  */
+
+    /* 
+    beforeMount(): 在界面初始显示前调用, 此时还不能通过ref得到页面的标签对象
+    */
+    beforeMount() {
+      // this.$refs: 得到的是所有有ref属性的标签的对象
+      console.log('beforeMount()', this.isShow, this.$refs.text) // 不能得到标签对象
+    },
+
+    /* 挂载到页面el中: 初始初始显示 */
+
+    /* 
+    mounted(): 在界面初始显示后调用, 此时能通过ref得到页面的标签对象
+    在初始化显示后立即执行
+    一般在此做一些一次性异步操作 ==> 比如: 启动定时器/发ajax请求/...
+    */
+    mounted() {
+      console.log('mounted()', this.isShow, this.$refs.text)  // 能得到标签对象
+      // 一般不会在vm的外面更新vm的data数据
+      this.intervalId = setInterval(() => { // 只需要启动一次, 必须要用箭头函数
+      console.log('-----')
+        this.isShow = !this.isShow
+      }, 2000);
+    },
+
+    /* 
+    beforeUpdate(): 在数据更新后, 界面更新前调用 ==> 取到的是老界面内容
+     */
+    beforeUpdate() {
+      console.log('beforeUpdate', this.isShow, this.$refs.text.innerHTML)
+    },
+
+    /* 
+    updated(): 在数据更新且界面更新后调用 ==> 取到的是新界面内容 
+    */
+    updated() {
+      console.log('updated', this.isShow, this.$refs.text.innerHTML) 
+    },
+
+
+     /* 
+    beforeDestroy(): 在vm将要死亡之前自动调用
+    一般在此执行一些收尾工作: 清除定时器/...
+    */
+    beforeDestroy() {
+      console.log('beforeDestroy()')
+      // 清除定时器
+      clearInterval(this.intervalId)
+    },
+
+    /* 移除vm响应式功能 ==> 界面不会再有变化了 */
+
+    /* 
+    destroyed(): 在vm已经死亡后自动调用
+    */
+    destroyed() {
+      console.log('destroyed()')
+    },
+
+
+    methods: {
+      destroyVM () {
+        this.$destroy()  // vm死亡后, 界面就不可能再更新显示了
+      }
+    },
+  })
+
+/* 
+内存溢出: 程序运行申请的内存超过了能分配给它的最大内存 => 抛出内存溢出错误, 程序挂了
+内存泄露: 占用了不再会使用的内存, 开始时程序还会正常运行, 但到了一定的程序容易导致内存溢出的错误
+ */
+  
+</script>
+</body>
+</html>
