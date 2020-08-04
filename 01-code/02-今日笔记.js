@@ -58,6 +58,14 @@
  * 
  * 切记: 组件中要找mutations中的某个方法那么就用commit
  *       组件中要找actions中的某个方法那么就用dispatch
+ * 
+ * mutations对象中的方法都可以叫mutation
+ * actions对象中的方法都可以叫action
+ * 
+ * 
+ * 组件绑定的辅助函数:该辅助函数可以直接在组件中使用,该辅助函数是为了简化组件中使用状态数据及提交mutation或者action的简化的写法
+ * 
+ * mutations中的方法名其实就是当前的这个mutation的type名字,type名字可以定义成常量名,在提交mutation的时候,直接使用常量名即可,再也不用担心字符串写错了,这种方式不是必须的(做项目的时候未必一定要定义常量名,也可以不去使用,保证:别人用你能够清楚是什么即可)
  *    
  * 
  * 
@@ -67,3 +75,48 @@
  * 
  * 
  */
+
+
+ /**
+  * Vuex:管理状态数据一种模式,也是一个工具(插件)
+  * Vuex作用: 集中式管理状态数据,可以实现任意组件之间的通信
+  * state:包含了多个状态数据的对象
+  * mutations:包含了多个直接修改状态数据的方法的对象
+  * actions:包含了多个间接修改状态数据的方法的对象
+  * getters:包含了多个状态数据的计算属性的get方法的对象
+  * modules(暂且不讲,前台电商项目中讲解,应用场景)
+  * 
+  * mutations: 内部的每个方法都可以叫mutation,每个mutation都有自己的type,type就是方法的名字,可以单独的使用常量的方式来定义,并使用
+  * actions: 内部的每个方法都可以叫action
+  * 
+  * 使用Vuex的流程:
+  * 1. 安装   npm install vuex --save
+  * 2. 在一个单独的目录中创建一个文件(vuex目录/store.js文件)/(store目录/index.js文件)---学习中的规范写法
+  *    到了公司里面,目录名字/文件名字可能会有变化(顺其自然/入乡随俗)
+  * 3. 在js文件中,引入Vue,引入Vuex,同时声明并使用该插件,把Vuex.Store({}) 暴露出去
+  * 4. main.js文件中引入暴露出来的store对象,并且在实例化Vue的时候,内部的配置对象进行store的注册
+  * 
+  * 
+  * 该组件(应用)中如何使用vuex
+  * 1. 一旦在main.js中进行了注册,那么每个组件的实例对象中都有一个$store对象
+  * 组件内部想要获取状态数据: 
+  *     this.$store.state.xxx  或者  ...mapState(['xxx'])
+  * 组件内部想要直接修改状态数据: 
+  *     this.$store.commit('mutation的type') 或者 ...mapMutations(['mutation的type'])
+  * 组件内部想要间接/异步修改状态数据: 
+  *     this.$store.dispatch('action的type') 或者 ...mapActions(['action的名字'])
+  * 组件内部想要获取状态数据的计算属性:
+  *     this.$store.getters.xxx  或者  ...mapGetters(['xxx'])
+  * 如果在html模版中使用状态数据或者计算属性,此时是不需要使用this的
+  * 
+  * 组件内部如果分发/提交action修改状态数据的思路:
+  *  通过dispatch进行提交action,修改状态数据,内部是通过commit找到对应的mutation进行数据的修改
+  * 
+  * mutations中的每个mutation方法中都可以传入一个state参数
+  * actions中的每个action方法中都可以传入一个context对象参数---->解构的方式:{commit}
+  * 
+  * 
+  * 
+  * 
+  * 
+  */
