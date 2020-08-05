@@ -2,6 +2,7 @@
   <div class="container">
    <Search/>
    <Main/>
+   <h2>真好</h2>
   </div>
 </template>
 
@@ -19,5 +20,6 @@
 </script>
 
 <style scoped>
+
 
 </style>

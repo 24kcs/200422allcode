@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>03_数据代理</title>
+  <script src="./js/mvvm.js"></script>
+  <script src="./js/observer.js"></script>
+  <script src="./js/compile.js"></script>
+  <script src="./js/watcher.js"></script>
+</head>
+
+<body>
+  <div id="app">
+
+  </div>
+  <script type="text/javascript">
+    // 实例化的是MVVM
+    const vm = new MVVM({
+      el:'#pp',
+      data:{
+        msg:'我喜欢男人,飞哥说'
+      }
+    })
+    console.log(vm.msg)
+    // 结论:MVVM中有数据代理,从而我们要研究这个玩意
+    // console.log(vm.msg)
+
+
+
+  /*
+   面试题: 如何理解Vue中的数据代理
+   在实例化Vue对象的时候,需要传入配置对象,内部会获取该配置对象中的data对象数据,并且存储到data变量及_data属性中
+   然后通过Object.keys获取data中的每个属性,进行遍历操作,遍历的过程中内部调用了Object.defineProperty()方法把data对象中的每个属性一个一个的添加到vm实例对象上,从而实现了数据代理
+
+
+   道理: 内部遍历了data对象,通过了Object.defineProperty()方法把data中的每个属性一个一个的添加到vm对象上
+
+   
+  
+  */
+ 
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>
