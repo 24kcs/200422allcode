@@ -29,25 +29,74 @@
     <p v-text="msg"></p>
   </div> -->
 
-  <!-- <div id="app">
-    <p v-html="msg"></p>
-  </div> -->
-
   <div id="app">
-    <p v-class="classA" class="cls2 cls3">hello</p>
-    <!-- <p v-bind:class="classA"></p> -->
-    <p v-class="classA" >hello</p>
+    <p v-html="msg"></p>
   </div>
   <script type="text/javascript">
 
     const vm = new MVVM({
       el: '#app',
       data: {
-       classA: 'cls'
-        // msg: '源码真香'
-        // msg: '<a href="http://www.baidu.com">百度</a>'
+       //  msg: '真香'
+       msg:'<a href="http://www.baidu.com">百度</a>'
       }
     })
+
+
+    /*
+    
+    标签中间能够显示其他标签的效果,比较常用的方式之一: innerHTML
+    v-html肯定是属性,肯定要获取,遍历所有属性,判断当前的这个属性v-html是不是指令,普通指令
+
+    
+    MVVM源码解析的时候 使用的方式  v-开头的,内部没有实现@
+    Vue中v-on简写:  @
+    v-bind--->简写---->  :
+    
+    
+    */
+
+
+
+
+
+
+    /*
+    
+      指令:普通指令和事件指令
+      v-text指令最终的效果就是在设置p标签中间的文本内容, p标签.textContent(innerHTML/innerText)属性-----赋值为---->msg属性的值
+      v-text是一个属性,只不过这个属性是以v-开头,那就是指令
+      获取属性的值: msg表达式,最终肯定应该通过vm找到msg属性的值,然后进行替换
+
+
+
+
+       谈谈你对MVVM中的普通指令解析的理解
+        1.实例化MVVM对象的时候,内部会创建Compile编译对象,并传入当前的div容器选择器(Compile内部会通过#app选择器获取div容器)
+        2.创建文档碎片对象,并且把div中所有的节点否扔进里面去,调用init方法,进行模版的解析
+        3.内部会先遍历文档碎片对象中所有的节点,判断节点中的是否有p标签节点,如果有则调用相关的方法,获取p标签上所有的属性
+        4.判断每个属性是不是指令,如果是指令再次判断该指令是不是普通指令,如果是普通指令,获取当前的v-text中的text,还有属性的值msg表达式
+        5.根据vm找到msg表达式的值
+        6.最终通过updater对象中的textUpdater方法进行p标签文本内容的替换操作
+        7.把p标签上所有的属性都删除,这些都是在文档碎片对象中(内存中)操作的
+        8.把编译后文档碎片对象重新放进div容器中
+
+
+
+          //  步骤:
+          //  1.创建MVVM对象
+          //  2.创建Compile编译对象
+          //  3.创建文档碎片对象,把div容器中的节点放进来
+          //  4.遍历所有节点,找到p,获取所有的属性
+          //  5.判断该属性是指令,是普通指令
+          //  6.通过updater对象中方法为p标签进行文本的替换操作
+          //  7.把文档碎片对象放在div中
+
+
+
+    
+    
+    */
 
 
     /*
