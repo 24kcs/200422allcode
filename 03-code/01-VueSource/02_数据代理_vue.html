@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>02_数据代理</title>
+  <script src="./js/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+  </div>
+
+  <script type="text/javascript">
+    // 实例化Vue的对象
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        msg: '日照香炉生紫烟,遥看情侣在林间'
+      }
+    })
+    // 此时是data是undefined
+    console.log(vm.data) // 为什么不行,
+    console.log(vm.$data.msg)
+    console.log(vm._data.msg)
+    // Vue中data对象中的数据,可以通过vm来进行访问,vm代替了data---->代理了data
+    // data对象是被代理者,vm是代理者,vm代理了data可以访问data中的数据,数据代理
+    console.log(vm.msg)
+
+
+    // var obj ={}
+    // console.log(obj.name.age)
+
+
+
+    // 数据代理
+
+    // 结论: Vue中是有数据代理, 研究一下内部的原理,大家需要搞定是这个道理大概是怎么回事(面试)
+
+    // 数据代理是如何实现? 为什么vm.data不行
+
+
+
+
+  </script>
+</body>
+
+</html>

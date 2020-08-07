@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>玉树临风美少年，揽镜自顾夜不眠 </title>
+</head>
+
+<body>
+  <div id="demo">毛毛雨
+    <p>强哥喜欢飞哥</p>
+    <p>禹哥喜欢强哥</p>
+    <p>老刘喜欢超哥</p>
+    <p>峰哥喜欢渊哥</p>
+  </div>
+  <script type="text/javascript">
+    // 复习
+    // 1. 伪数组转真数组的方式
+    // const list1 = document.getElementsByTagName('p')
+    // console.log(list1 instanceof Array) // 伪数组
+    // // 以下都转变成了真数组
+    // const list2 = [...list1] // 
+    // const list3 = Array.from(list1)
+    // const list4 = Array.prototype.slice.call(list1)
+    // const list5 = [].slice.call(list1) 
+
+    // console.log(list2 instanceof Array)
+    // console.log(list3 instanceof Array)
+    // console.log(list4 instanceof Array)
+    // console.log(list5 instanceof Array)
+
+
+
+
+
+
+    // 2. nodeType节点:页面中所有的东西都可以叫节点, 标签,元素,文本,属性
+    /*
+      节点: 标签节点,属性节点,文本节点,他们都是节点,节点是有类型的
+      标签---->元素(DOM中的叫法)---->标签节点
+      文本节点:文字内容,空行,回车,空白文本节点
+      属性节点:标签中的属性和值
+      文档:整个当前的页面,页面中的标签都有嵌套的关系,一层一层的,形成了一个树形的的效果,称为:树形结构图,DOM树
+
+      获取了一些节点,通过判断该节点的类型,就可以知道获取的节点到底是什么节点!
+      nodeType属性可以获取当前这个节点的类型
+      该属性值: 1---标签节点, 2----属性节点, 3----文本节点
+
+    
+    */
+    // 根据id获取当前的div对象---元素---标签对象----标签节点
+    // const divNode = document.getElementById('demo')
+    // // 根据属性的名字来获取当前的属性节点
+    // const attrNode = divNode.getAttributeNode('id')
+    // // 获取div标签中的第一个文本节点
+    // const txtNode = divNode.firstChild
+    // console.log(divNode.nodeType)
+    // console.log(attrNode.nodeType)
+    // console.log(txtNode.nodeType)
+
+
+
+    // 3. Object.defineProperty()方法---为对象添加属性---Vue的源码中经常用到
+    // const person = {
+    //   firstName: '东方',
+    //   lastName: '强哥'
+    // }
+
+    // // 为某个对象添加一个属性,并对该属性进行一些配置操作
+    // Object.defineProperty(person, 'fullName', {
+    //   configurable: false, // 默认不能被删除(属性的相关操作)
+    //   enumerable: true,  // 默认是false,不能被枚举遍历
+    //   // value:'哈_哈', // 默认值
+    //   // writable:false, // 默认是false,能否被修改(重写)
+    //   // 获取(读取),外部在获取fullName这个属性的时候,会进入到这个get方法
+    //   get() {
+    //     return this.firstName + '_' + this.lastName
+    //   },
+    //   // 设置(写入),外部在为fullName这个属性赋值的时候,会进入到这个set方法
+    //   set(val) {
+    //     const names = val.split('_')
+    //     this.firstName = names[0]
+    //     this.lastName = names[1]
+    //   }
+
+    // })
+    // // // 当前对象中添加了一个属性
+    // person.fullName = person.firstName + '_' + person.lastName
+    // console.log(person.fullName)
+    // person.fullName = '诸葛_飞哥'
+    // console.log(person.firstName, person.lastName)
+    // person.firstName = '西门'
+    // person.lastName = '吹雪'
+    // console.log(person.fullName)
+
+    // 姓氏  和  名字  ----->  姓名 ,任意一个变化,其他的也应该自动的变化
+
+
+    // function Person (){}
+    // Person.prototype.sayHi=function(){
+    //   console.log('考尼奇瓦')
+    // }
+    // function Student(){
+
+    // }
+    // // Student的原型指向改变了,指向了 Person的实例对象
+    // const per = new Person()
+    // Student.prototype = per
+    // // 实例化Student
+    // const stu = new Student()
+    // stu.sayHi()
+    // console.log(Student.prototype===per)
+    // console.log(stu.__proto__===Student.prototype)
+    // // stu的隐式原型指向了per实例对象
+    // console.log(stu.__proto__===per)
+
+    // const person ={
+    //   name:'小明',
+    //   eat:function(){
+    //     console.log('油炸铁轨,真好吃')
+    //   }
+    // }
+    // // 设置stu对象的隐式原型指向了person对象
+    // const stu = Object.create(person)
+    // console.log(stu.name)
+    // stu.eat()
+    // console.log(stu.__proto__===person)
+
+    // Object.create()
+
+
+    // 4. Object.keys()方法,获取某个对象中所有的键
+    // person对象中所有的属性
+    // var keys = Object.keys(person)
+    // console.log(keys)
+
+    // 5. 对象.hasOwnProperty()方法,用来判断当前对象中是否有这个属性
+    // console.log(person.hasOwnProperty('firstName'))
+    // // 没有toString这个属性
+    // console.log(person.hasOwnProperty('tostring'))
+    // // 可以调用,没有报错,因为原型指向中有这个方法,是继承过来的,所以可以使用
+    // console.log(person.toString())
+    // console.dir(person)
+
+
+    // 6.文档碎片对象模型---DcoumentFragment----(高效批量处理多个节点)
+
+    // 案例:通过文档碎片对象,把html中的某些标签的内容进行更新操作
+
+
+    // 第一种方式:直接获取所有的p标签,通过遍历,修改内部的内容,即可-----属于直接操作DOM树中的节点--如果说要操作的节点非常的多,那么这种直接操作DOM树的方式,会令页面出现卡顿的效果,非常的明显
+
+    // 第二种方式:文档碎片对象模型的方式,先获取所有的p标签的父级节点,在拿到内部所有的子级节点,全部的放在文档碎片对象中,在内存中对文档碎片对象中的所有节点进行操作(没有直接操作DOM树),操作后结果再给当前父级节点即可----效率要高于直接操作DOM树的效率,卡顿没有之前的方式那么明显
+
+
+
+    // 1. 获取div父级节点
+    const divObj = document.getElementById('demo')
+    // 2. 创建文档碎片对象
+    const fragment = document.createDocumentFragment()
+    // 3. 把div父级节点中所有的子级节点全都放在文档碎片对象中(丢进了这个文档碎片对象中---(剪切))--内存中
+    // 没有直接操作DOM树,都是在内存中完成,内存中的这些节点可以看成是虚拟的DOM
+    var child
+    // 遍历操作
+    while (child = divObj.firstChild) {
+      // 把每个子节点扔进到文档碎片对象中
+      fragment.appendChild(child)
+    }
+    // console.log('床前明月光,强哥去开窗,遇到一耳光,牙齿掉光光')
+
+
+
+    // 4. 遍历文档碎片对象中所有的子节点,修改内容
+    fragment.childNodes.forEach(node => {
+      // 改变每个节点的显示内容
+      node.innerHTML = '锄禾日当午,地雷埋下土,强哥走过去,炸成二百五'
+    })
+
+    // 5. 把文档碎片对象放在父级节点div中即可
+    divObj.appendChild(fragment)
+
+    // 使用了文档碎片对象模型的方式在内存中操作节点,并不是直接操作DOM树,可以理解为是虚拟DOM的操作
+
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
