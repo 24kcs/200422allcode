@@ -50,7 +50,7 @@ Observer.prototype = {
                     return;
                 }
                 val = newVal;
-                // 新的值是object的话，进行监听
+                // 如果修改的值是一个对象，那么就会重新劫持一下，目的:一个属性产生一个dep对象
                 childObj = observe(newVal);
                 // 通知订阅者
                 dep.notify();
@@ -97,8 +97,12 @@ Dep.prototype = {
             this.subs.splice(index, 1);
         }
     },
-
+    // 当前的这个msg属性对应着一个dep对象,dep对象中的subs数组中有两个watcher
+    // data中一个属性对应一个dep
+    // html容器中一个表达式对应一个watcher
+    // msg属性值要改了,那么对应的这个dep就会立刻通知对应的两个watcher对象
     notify: function() {
+        // 遍历所有的watcher对象,更新数据操作
         this.subs.forEach(function(sub) {
             sub.update();
         });

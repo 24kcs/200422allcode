@@ -22,14 +22,21 @@ function Watcher(vm, expOrFn, cb) {
 
 Watcher.prototype = {
     constructor: Watcher,
+    // 更新数据操作,
     update: function() {
         this.run();
     },
+    // 才是真正的更新数据操作的方法
     run: function() {
+        // 先获取当前的msg的值
         var value = this.get();
+        // msg原来的值
         var oldVal = this.value;
+        // 对比,确实不同
         if (value !== oldVal) {
+            // 改变成新值
             this.value = value;
+            // 必须更新一下html中的表达式
             this.cb.call(this.vm, value, oldVal);
         }
     },
