@@ -8,8 +8,11 @@
           <p>谷粒商城欢迎您！</p>
           <p>
             <span>请</span>
-            <a href="###">登录</a>
-            <a href="###" class="register">免费注册</a>
+            <!-- <a href="###">登录</a> -->
+            <!-- <a href="###" class="register">免费注册</a> -->
+            <!--声明式路由跳转,路由链接进行跳转-->
+            <router-link to="/login">登录</router-link>
+            <router-link to="/register" class="register">免费注册</router-link>
           </p>
         </div>
         <div class="typeList">
@@ -27,14 +30,18 @@
     <!--头部第二行 搜索区域-->
     <div class="bottom">
       <h1 class="logoArea">
-        <a class="logo" title="尚品汇" href="###" target="_blank">
+        <!-- <a class="logo" title="尚品汇" href="###" target="_blank">
           <img src="./images/logo.png" alt />
-        </a>
+        </a>-->
+
+        <router-link class="logo" title="尚品汇" to="/">
+          <img src="./images/logo.png" alt />
+        </router-link>
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" />
-          <button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword" />
+          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="toSearch">搜索</button>
         </form>
       </div>
     </div>
@@ -43,6 +50,54 @@
 <script>
 export default {
   name: 'Header',
+  data() {
+    return {
+      keyword: '', // 文本框中输入的数据
+    }
+  },
+  // 方法对象
+  methods: {
+    // 按钮的点击事件的回调函数,----去Search界面
+    toSearch() {
+      // 路由跳转
+      // 传入一个空的成功回调
+      // this.$router.push('/search',()=>{})
+      // 传入了一个空的成功和空的失败的回调函数
+      // this.$router.push('/search',()=>{},()=>{ })
+      // 传入一个空的失败的回调
+      // this.$router.push('/search',undefined,()=>{ })
+      // 使用.then和.catch
+      // this.$router.push('/search').then(()=>{}).catch(()=>{})
+      // 使用一个catch页可以解决
+      // this.$router.push('/search').catch(()=>{})
+      // 以上这些方式虽然都可以解决路由跳转的bug,但是,不方便,所以,都不用
+
+      // 就这么写
+      // this.$router.push('/search')
+
+      // 编程式路由跳转及传参
+      // 路由跳转的同时把文本框中输入的数据传递到search界面
+      //===============================下面的两种方式都是以字符串的写法来进行跳转及传参
+      // params的方式传参
+      // this.$router.push(`/search/${this.keyword}`)
+      // query的方式传参
+      // this.$router.push(`/search?keyword=${this.keyword}`)
+      //===============================下面的两种方式都是以对象的写法来进行跳转及传参
+      // query的方式以对象的写法进行传参
+      // this.$router.push({path:'/search',query:{keyword:this.keyword}})
+      // params的方式以对象的写法进行传参
+      // this.$router.push({name:'search',params:{keyword:this.keyword}})
+
+      // 跳转无论是否需要传递参数---params的方式
+      if (this.keyword) {
+        // 有数据
+        this.$router.push({ name: 'search', params: { keyword: this.keyword } })
+      } else {
+        // 没有数据
+        this.$router.push({ name: 'search' })
+      }
+    },
+  },
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>

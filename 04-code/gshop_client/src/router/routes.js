@@ -15,8 +15,9 @@ export default [
   },
   // 注册Search路由组件
   {
-    path: '/search',
-    component: Search
+    path: '/search/:keyword?', // ? 当前的keyword参数可有可无,都可以进行路由的跳转
+    component: Search,
+    name:'search'
   },
   // 注册Login路由组件
   {
