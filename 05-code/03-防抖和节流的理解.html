@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>玉树临风美少年，揽镜自顾夜不眠 </title>
+</head>
+
+<body>
+  <button id="btn1">函数的节流</button>
+  <button id="btn2">函数的防抖</button>
+  <script type="text/javascript">
+
+    /*
+      为了提升用户的操作体验
+      有的时候需要限定一些用户的行为---------防抖或者节流的方式来实现
+
+      函数的节流: 隔一段时间就会执行一次某个回调函数
+        首先先执行一次,然后在间隔的时间内再执行,大于设定的执行时间(周期),才会执行下一次,适合多次的事件按照设置的事件间隔来触发
+        应用场景
+          窗口的应用,页面的滚动,拖拽的行为,鼠标进入和鼠标离开的相关的事件的操作(疯狂的抢购)
+
+      函数的防抖:只执行最后一次
+        在函数频繁触发的时候,在规定的时间内,只能让最后一次的回调执行
+        应用场景：
+          实时的联想搜索--->键盘的抬起事件
+          文本框输入内容验证操作(ajax发送请求的操作)
+    
+    
+    */
+    // 函数节流
+    function throttle(cb, time) {
+      // cb-----事件对应的回调函数
+      // time----时间间隔---多久执行一次该回调函数
+      let start = 0 // 开始的时间
+      return function (...args) {
+        console.log('节流执行了')
+        // 获取当前的时间
+        const current = Date.now()
+        // 14:55 10秒 > 2000
+        if (current - start > time) {
+          // 重置开始时间
+          start = current
+          cb.call(this, args)
+        }
+      }
+    }
+
+    // 函数防抖----只执行一次
+    function debounce(cb, time) {
+      return function (...args) {
+        console.log('防抖触发了')
+        // 更加干净的只有一个定时器
+        if (cb.timeId) {
+          // 如果有则先干掉定时器
+          clearTimeout(cb.timeId)
+        }
+        // 一次性的定时器
+        cb.timeId = setTimeout(() => {
+          // 先干掉这个定时器
+          delete cb.timeId
+          cb.apply(this, args)
+        }, time)
+      }
+    }
+    function callback() {
+      console.log('按钮被点击了')
+    }
+
+    // 两个按钮都有点击事件
+    // 缺点:用户可以随机,使劲的点击按钮,----用户在玩,不停的点击按钮-----按钮的事件就会自动的触发-----
+    // 限制用户的点击次数(点赞按钮,抢票,抽奖.....鼠标不停的滑动,滚动的操作)
+    document.getElementById('btn1').onclick = throttle(callback, 2000) // 把事件的回调函数及你希望的多久执行一次该函数的时间给我
+    document.getElementById('btn2').onclick = debounce(callback, 2000)
+  </script>
+</body>
+
+</html>

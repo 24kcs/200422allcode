@@ -9,7 +9,8 @@ export default {
   mutations: {
     // 直接修改三级分类的状态数据的方法
     RECEIVE_BASE_CATEGORY_LIST (state, baseCategoryList) {
-      state.baseCategoryList = baseCategoryList
+      // 由于后台设计数据的时候多了两个,前端在获取数据后,干掉后面的两个数据,不要了
+      state.baseCategoryList = baseCategoryList.splice(0,baseCategoryList.length-2)
     }
   },
   actions: {

@@ -1,40 +1,60 @@
 <template>
   <div class="type-nav">
-    <div class="container">
+    <div class="container" @mouseenter="showFirst" @mouseleave="hideFirst">
       <h2 class="all">全部商品分类</h2>
 
-      <div class="sort">
+      <div class="sort" @click="toSearch" v-if="isShowFirst">
         <div class="all-sort-list2">
-          <div class="item" v-for="(c1,index) in baseCategoryList" :key="c1.categoryId">
+          <!--遍历一级分类-->
+          <div
+            class="item"
+            :class="{item_on:currentIndex===index}"
+            @mouseenter="showSubCategorys(index)"
+            v-for="(c1,index) in baseCategoryList"
+            :key="c1.categoryId"
+          >
             <h3>
-              <a href>图书、音像、数字商品</a>
+              <a
+                href="javascript:;"
+                :data-categoryName="c1.categoryName"
+                :data-category1Id="c1.categoryId"
+              >{{c1.categoryName}}</a>
+              <!-- <a href="javascript:;" @click="toSearch">{{c1.categoryName}}</a> -->
+              <!-- <a href>{{c1.categoryName}}</a> -->
+              <!-- <router-link :to="{path:'/search',query:{categoryName:c1.categoryName,category1Id:c1.categoryId}}">{{c1.categoryName}}</router-link> -->
             </h3>
             <div class="item-list clearfix">
               <div class="subitem">
-                <dl class="fore">
+                <!--遍历二级分类-->
+                <dl class="fore" v-for="(c2,index) in c1.categoryChild" :key="c2.categoryId">
                   <dt>
-                    <a href>电子书</a>
+                    <a
+                      href="javascript:;"
+                      :data-categoryName="c2.categoryName"
+                      :data-category2Id="c2.categoryId"
+                    >{{c2.categoryName}}</a>
+                    <!-- <a href="javascript:;" @click="toSearch">{{c2.categoryName}}</a> -->
+                    <!-- <a href>{{c2.categoryName}}</a> -->
+                    <!-- <router-link :to="{path:'/search',query:{categoryName:c2.categoryName,category2Id:c2.categoryId}}">{{c2.categoryName}}</router-link> -->
                   </dt>
                   <dd>
-                    <em>
-                      <a href>婚恋/两性</a>
-                    </em>
-                    <em>
-                      <a href>文学</a>
-                    </em>
-                    <em>
-                      <a href>经管</a>
-                    </em>
-                    <em>
-                      <a href>畅读VIP</a>
+                    <!--遍历三级分类-->
+                    <em v-for="(c3,index) in c2.categoryChild" :key="c3.categoryId">
+                      <a
+                        href="javascript:;"
+                        :data-categoryName="c3.categoryName"
+                        :data-category3Id="c3.categoryId"
+                      >{{c3.categoryName}}</a>
+                      <!-- <a href="javascript:;">{{c3.categoryName}}</a> -->
+                      <!-- <a href="javascript:;" @click="toSearch">{{c3.categoryName}}</a> -->
+                      <!-- <a href>{{c3.categoryName}}</a> -->
+                      <!-- <router-link :to="{path:'/search',query:{categoryName:c3.categoryName,category3Id:c3.categoryId}}">{{c3.categoryName}}</router-link> -->
                     </em>
                   </dd>
                 </dl>
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
       <nav class="nav">
@@ -53,14 +73,82 @@
 <script>
 // 引入vuex的辅助函数
 import { mapState } from 'vuex'
+// 引入lodash
+import throttle from 'lodash/throttle'
 export default {
   name: 'TypeNav',
+  data() {
+    return {
+      currentIndex: -2, // 用来存储有高亮显示的分类的索引
+      isShowFirst: true, // 表示的是:当前的分类列表默认是显示的
+    }
+  },
   // 计算属性
   computed: {
+    // 获取三级分类列表数据
     ...mapState({
       baseCategoryList: (state) => state.home.baseCategoryList,
-    })
-  }
+    }),
+  },
+  methods: {
+    // 鼠标移动的事件
+    showSubCategorys: throttle(function (index) {
+      this.currentIndex = index
+    }, 300),
+    // 点击分类信息实现路由跳转操作
+    toSearch(event) {
+      // console.log(event.target)
+      // console.log(event.target.tagName)
+      const target = event.target
+      if (target.tagName === 'A') {
+        // console.log(target.dataset)
+        // 必然是点击a标签进行路由的跳转---传递分类的名字数据/1级分类的id/2级分类的id/3级分类的id/
+        // console.log('此时点击的就是a标签')
+        // 获取分类的名字/1级id/2级id/3级id
+        const {
+          categoryname,
+          category1id,
+          category2id,
+          category3id,
+        } = target.dataset
+        const query = { categoryName: categoryname }
+        // 判断
+        if (category1id) {
+          query.category1Id = category1id
+        } else if (category2id) {
+          query.category2Id = category2id
+        } else if (category3id) {
+          query.category3Id = category3id
+        }
+        // 路由跳转到search界面,同时携带参数数据
+        this.$router.push({ path: '/search', query })
+
+        // 跳转操作---->search界面() ,当前点击的首页中的TypeNav组件, 进入到Search界面,也有TypeNav组件
+        this.isShowFirst = false
+        this.currentIndex = -2
+      }
+    },
+    // 鼠标进入事件--显示分类列表
+    showFirst() {
+      this.isShowFirst = true
+    },
+    // 鼠标离开事件--隐藏分类列表
+    hideFirst() {
+      this.currentIndex = -2 // 先隐藏右侧的二级分类和三级分类的这一块
+      // 先判断是不是首页离开
+      if (this.$route.path !== '/') {
+        this.isShowFirst = false
+      }
+    },
+  },
+  // 界面加载后的生命周期回调
+  mounted() {
+    // 判断当前的路由的地址是不是/---首页
+    if (this.$route.path !== '/') {
+      // 此时不是首页来使用该组件---TypeNav,既然不是首页,那么分类列表就隐藏
+      this.isShowFirst = false
+    }
+  },
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
@@ -160,7 +248,8 @@ export default {
               }
             }
           }
-          &:hover {
+          &.item_on {
+            background-color: #02a774;
             .item-list {
               display: block;
             }
