@@ -11,9 +11,7 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
-    <!--楼层-->
-    <Floor />
+    <Floor v-for="(floor,index) in floors" :key="floor.id" :floor="floor" />
     <!--商标-->
     <Brand />
   </div>
@@ -31,7 +29,8 @@ import Like from './Like'
 import Floor from './Floor'
 // 引入Brand 组件
 import Brand from './Brand'
-
+// 引入vuex的辅助函数
+import {mapState} from 'vuex'
 export default {
   name: 'Home',
   // 注册组件
@@ -42,6 +41,11 @@ export default {
     Like,
     Floor,
     Brand,
+  },
+  computed: {
+    ...mapState({
+      floors:state=>state.home.floors
+    })
   },
   mounted () {
     this.$store.dispatch('getBanners')

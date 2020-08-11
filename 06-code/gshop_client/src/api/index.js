@@ -17,3 +17,7 @@ export const reqBaseCategoryList = () => ajax.get(`/product/getBaseCategoryList`
 
 export const reqBanners = () => ajaxMock.get('/banners')
 export const reqFloors = () => ajaxMock.get('/floors')
+
+
+// 获取商品信息对象的接口
+export const reqProductList = (searchParams) => ajax.post(`/list`, searchParams)

@@ -3,28 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner3.jpg" />
-            </div>
-            <!-- <div class="swiper-slide">
-                <img src="./images/banner2.jpg" />
-              </div>
-              <div class="swiper-slide">
-                <img src="./images/banner3.jpg" />
-              </div>
-              <div class="swiper-slide">
-                <img src="./images/banner4.jpg" />
-            </div>-->
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :carouselList="banners" />
       </div>
       <div class="right">
         <div class="news">
@@ -109,8 +88,115 @@
   </div>
 </template>
 <script>
+// 引入vuex的辅助函数
+import { mapState } from 'vuex'
+// // 引入swiper对象及样式文件
+// import Swiper from 'swiper'
+// 引入Vue
+// import Vue from 'vue'
 export default {
   name: 'ListContainer',
+  computed: {
+    // 通过辅助函数获取vuex中的轮播图banners数据
+    ...mapState({
+      banners: (state) => state.home.banners,
+    }),
+  },
+
+
+
+
+
+
+
+  
+  // 界面加载后的生命周期回调
+  // mounted() {
+  //   // 类样式的名字的选择器---类选择器
+  //   // var mySwiper = new Swiper('.swiper-container', {
+  //   // var mySwiper = new Swiper('#swiper1', {
+  //   //   var mySwiper = new Swiper(this.$refs.sw1, {
+  //   //   loop: true, // 循环模式选项
+  //   //   // 如果需要分页器
+  //   //   pagination: {
+  //   //     el: '.swiper-pagination',
+  //   //   },
+  //   //   // 如果需要前进后退按钮
+  //   //   navigation: {
+  //   //     nextEl: '.swiper-button-next',
+  //   //     prevEl: '.swiper-button-prev',
+  //   //   },
+  //   // })
+  //   // setTimeout(() => {
+  //   //   var mySwiper = new Swiper(this.$refs.sw1, {
+  //   //     loop: true, // 循环模式选项
+  //   //     // 如果需要分页器
+  //   //     pagination: {
+  //   //       el: '.swiper-pagination',
+  //   //     },
+  //   //     // 如果需要前进后退按钮
+  //   //     navigation: {
+  //   //       nextEl: '.swiper-button-next',
+  //   //       prevEl: '.swiper-button-prev',
+  //   //     },
+  //   //   })
+  //   //   // 你能确定 1秒之后 肯定能拿到数据吗?
+  //   // }, 1000)
+  // },
+  // 1. 直接使用定时
+  // 2. 监视+定时器的方式完美的解决了swiper的bug
+  // 3. 监视+$nextTick(回调)
+  // watch: {
+  //   banners() {
+  //     // 将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
+  //     this.$nextTick(() => {
+  //       // DOM更新后,再执行这里的内容
+  //       var mySwiper = new Swiper(this.$refs.sw1, {
+  //         loop: true, // 循环模式选项
+  //         // 如果需要分页器
+  //         pagination: {
+  //           el: '.swiper-pagination',
+  //         },
+  //         // 如果需要前进后退按钮
+  //         navigation: {
+  //           nextEl: '.swiper-button-next',
+  //           prevEl: '.swiper-button-prev',
+  //         },
+  //       })
+  //     })
+  //     // 数据一旦变化了,那么就说明数据已经获取到了
+  //     // setTimeout(() => {
+  //     //   var mySwiper = new Swiper(this.$refs.sw1, {
+  //     //     loop: true, // 循环模式选项
+  //     //     // 如果需要分页器
+  //     //     pagination: {
+  //     //       el: '.swiper-pagination',
+  //     //     },
+  //     //     // 如果需要前进后退按钮
+  //     //     navigation: {
+  //     //       nextEl: '.swiper-button-next',
+  //     //       prevEl: '.swiper-button-prev',
+  //     //     },
+  //     //   })
+  //     // }, 1000)
+
+  //     // Vue.nextTick(() => {
+  //     //   // DOM更新后,再执行这里的内容
+  //     //   var mySwiper = new Swiper(this.$refs.sw1, {
+  //     //     loop: true, // 循环模式选项
+  //     //     // 如果需要分页器
+  //     //     pagination: {
+  //     //       el: '.swiper-pagination',
+  //     //     },
+  //     //     // 如果需要前进后退按钮
+  //     //     navigation: {
+  //     //       nextEl: '.swiper-button-next',
+  //     //       prevEl: '.swiper-button-prev',
+  //     //     },
+  //     //   })
+  //     // })
+  //   },
+  // },
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
