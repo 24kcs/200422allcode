@@ -124,8 +124,18 @@ export default {
         } else if (category3id) {
           query.category3Id = category3id
         }
-        // 路由跳转到search界面,同时携带参数数据
-        this.$router.push({ path: '/search', query })
+        // 获取此时的路由的地址及params参数
+        const { path, params } = this.$route
+        // 判断当前的路由的路径(地址)是否有/search
+        if (path.indexOf('/search') === 0) {
+          // 此时有/search地址
+          this.$router.replace({ path, query, params })
+        } else {
+          // 此时没有
+          // 路由跳转到search界面,同时携带参数数据
+          this.$router.replace({ path: '/search', query })
+        }
+
         // 跳转操作---->search界面() ,当前点击的首页中的TypeNav组件, 进入到Search界面,也有TypeNav组件
         this.isShowFirst = false
         this.currentIndex = -2

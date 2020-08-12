@@ -22,6 +22,11 @@ Vue.component('TypeNav', TypeNav)
 Vue.component('Carousel', Carousel)
 // 实例化Vue
 new Vue({
+  // 初始化之前
+  beforeCreate () {
+    // this就是Vue的实例对象
+    Vue.prototype.$bus = this
+  },
   render: h => h(App),
   // 注册路由器
   router,

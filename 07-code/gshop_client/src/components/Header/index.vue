@@ -89,15 +89,41 @@ export default {
       // this.$router.push({name:'search',params:{keyword:this.keyword}})
 
       // 跳转无论是否需要传递参数---params的方式
+      // 获取path 和 query 参数
+      const { path, query } = this.$route
       if (this.keyword) {
-        // 有数据
-        this.$router.push({ name: 'search', params: { keyword: this.keyword } })
+        // 判断当前的路径中是否有/search
+        if (path.indexOf('/search') === 0) {
+          this.$router.push({
+            name: 'search',
+            params: { keyword: this.keyword },
+            query,
+          })
+        } else {
+          // 有数据
+          this.$router.push({
+            name: 'search',
+            params: { keyword: this.keyword },
+          })
+        }
       } else {
-        // 没有数据
-        this.$router.push({ name: 'search' })
+        // 判断当前的路径中是否有/search
+        if (path.indexOf('/search') === 0) {
+           this.$router.push({ name: 'search',query })
+        } else {
+          // 没有数据
+          this.$router.push({ name: 'search' })
+        }
       }
     },
   },
+  // 界面加载后的生命周期回调
+  mounted () {
+    // 自定义事件,而且绑定到事件总线中
+    this.$bus.$on('removeKeyword',()=>{
+      this.keyword = ''
+    })
+  }
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
