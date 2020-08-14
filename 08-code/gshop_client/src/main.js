@@ -14,12 +14,15 @@ import './mock/mockServer'
 import 'swiper/css/swiper.css'
 // 引入Carousel轮播图组件
 import Carousel from '@/components/Carousel'
+// 引入Pagination分页组件
+import Pagination from '@/components/Pagination'
 // 设置浏览器的控制台中的提示信息默认不显示
 Vue.config.productionTip = false
 // 注册全局组件(需要的使用的位置直接用即可)
 Vue.component('TypeNav', TypeNav)
 // 轮播图的全局公共组件
 Vue.component('Carousel', Carousel)
+Vue.component('Pagination', Pagination)
 // 实例化Vue
 new Vue({
   // 初始化之前

@@ -100,39 +100,19 @@
             </ul>
           </div>
           <!--分页内容-->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted">
-                  <span>...</span>
-                </li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div>
-                <span>共10页&nbsp;</span>
-              </div>
-            </div>
-          </div>
+          <!--
+            当前的分页组件需要传入的数据
+            total: 所有商品的总数量
+            productList:对象中有总的商品数量
+            goodsList:数组,是当前这个页面中的总的商品数据,该数组中数据的个数是这一页中的商品数量
+
+            showPageNo: 当前的连续页码数,表示的是连续的页码的数量(一般情况连续的页码都是奇数的)
+
+            pageNo: 当前默认的页码,比如: pageNo:1 代表的是当前的第一页
+
+            pageSize: 每页显示的数量(每一页商品的条数),如:当前每一页显示3条数据
+          -->
+          <Pagination :pageConfig="{total:productList.total,showPageNo:5,pageNo:options.pageNo,pageSize:options.pageSize}" @changeCurrentPage="getproductList" />
         </div>
       </div>
     </div>
@@ -160,7 +140,7 @@ export default {
         // trademark: '', // 品牌    '品牌的id:品牌的名字'  如:'246:诺基亚'
         order: '1:desc', // 排序  1--->综合,2--->价格  desc--->降序, asc--->升序
         pageNo: 1, // 当前显示第几页的数据,默认是第一页
-        pageSize: 5, // 每页显示几条数据
+        pageSize: 1, // 每页显示几条数据
         keyword: '', // 文本框中输入的搜索关键字
         props: [], // 平台属性数据 ['平台属性的id:平台属性值:平台属性名字'] ,如:['1353:骁龙730G:CPU型号']
       },
@@ -213,7 +193,9 @@ export default {
   },
   methods: {
     // 获取商品信息数据
-    getproductList() {
+    getproductList(pageNo=1) { // 参数设置一个默认值
+      // 更新当前的页码
+      this.options.pageNo = pageNo
       this.$store.dispatch('getProductList', this.options)
     },
     // 移除分类信息的名字
@@ -325,6 +307,13 @@ export default {
       }
       // ⬇⬆
     },
+
+    // 分页组件如果改变了页码,那么通知当前的父级组件,页码改变了,那么应该访问对应的页码的商品信息数据,父级的商品的展示要改变
+    // changeCurrentPage(pageNo){
+    //   // this.options.pageNo =pageNo
+    //   // 重新获取商品信息数据
+    //   this.getproductList(pageNo)
+    // }
   },
 }
 
@@ -579,93 +568,6 @@ export default {
                 }
               }
             }
-          }
-        }
-      }
-
-      .page {
-        width: 733px;
-        height: 66px;
-        overflow: hidden;
-        float: right;
-
-        .sui-pagination {
-          margin: 18px 0;
-
-          ul {
-            margin-left: 0;
-            margin-bottom: 0;
-            vertical-align: middle;
-            width: 490px;
-            float: left;
-
-            li {
-              line-height: 18px;
-              display: inline-block;
-
-              a {
-                position: relative;
-                float: left;
-                line-height: 18px;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #e0e9ee;
-                margin-left: -1px;
-                font-size: 14px;
-                padding: 9px 18px;
-                color: #333;
-              }
-
-              &.active {
-                a {
-                  background-color: #fff;
-                  color: #e1251b;
-                  border-color: #fff;
-                  cursor: default;
-                }
-              }
-
-              &.prev {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-
-              &.disabled {
-                a {
-                  color: #999;
-                  cursor: default;
-                }
-              }
-
-              &.dotted {
-                span {
-                  margin-left: -1px;
-                  position: relative;
-                  float: left;
-                  line-height: 18px;
-                  text-decoration: none;
-                  background-color: #fff;
-                  font-size: 14px;
-                  border: 0;
-                  padding: 9px 18px;
-                  color: #333;
-                }
-              }
-
-              &.next {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-            }
-          }
-
-          div {
-            color: #333;
-            font-size: 14px;
-            float: right;
-            width: 241px;
           }
         }
       }
