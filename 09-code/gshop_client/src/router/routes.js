@@ -8,6 +8,8 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 // 引入Detail 组件
 import Detail from '@/pages/Detail'
+// 引入AddCartSuccess组件
+import AddCartSuccess from '@/pages/AddCartSuccess'
 // 路由组件的注册
 export default [
   // 注册Home路由组件
@@ -44,6 +46,11 @@ export default [
     path:'/detail/:skuId',
     component:Detail,
     name:'detail'
+  },
+  // 注册添加购物车成功的组件
+  {
+    path:'/addcartsuccess',
+    component:AddCartSuccess
   },
   // 重新定向的操作的配置,默认跳转到Home组件界面
   {

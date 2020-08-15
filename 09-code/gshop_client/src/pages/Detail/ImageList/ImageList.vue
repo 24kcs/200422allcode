@@ -2,7 +2,11 @@
   <div class="swiper-container" ref="sw2">
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for="(img,index) in skuImageList" :key="img.id">
-        <img :src="img.imgUrl" />
+        <img
+          :src="img.imgUrl"
+          :class="{active:currentIndex===index}"
+          @click="changeCurrentIndex(index)"
+        />
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -16,6 +20,11 @@ import Swiper from 'swiper'
 import { mapGetters } from 'vuex'
 export default {
   name: 'ImageList',
+  data() {
+    return {
+      currentIndex: 0,
+    }
+  },
   computed: {
     ...mapGetters(['skuImageList']),
   },
@@ -30,8 +39,8 @@ export default {
         this.$nextTick(() => {
           // DOM更新后,再执行这里的内容
           var mySwiper = new Swiper(this.$refs.sw2, {
-            slidesPerView:5, // 当前这一块屏中显示5个图片
-            slidesPerGroup:2, // 每次移动2张图片
+            slidesPerView: 5, // 当前这一块屏中显示5个图片
+            slidesPerGroup: 2, // 每次移动2张图片
             // 如果需要分页器
             pagination: {
               el: '.swiper-pagination',
@@ -46,6 +55,15 @@ export default {
       },
       // 该回调将会在侦听开始之后被立即调用
       immediate: true,
+    },
+  },
+  methods: {
+    // 点击图片,修改选中索引,及设置高亮显示效果
+    changeCurrentIndex(index) {
+      // 修改当前的图片的选中的索引值
+      this.currentIndex = index
+      // 分发父级组件中的自定义事件,并且传入改变后的索引值
+      this.$emit('changeCurrentIndex', index)
     },
   },
 }

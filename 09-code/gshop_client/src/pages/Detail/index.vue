@@ -16,9 +16,14 @@
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <!-- <Zoom :imgUrl="小图地址" :bigImgUrl="大图的地址" 其实都是同一个图片地址 /> -->
+          <Zoom
+            v-if="skuImageList.length>0"
+            :imgUrl="skuImageList[currentIndex].imgUrl"
+            :bigImgUrl="skuImageList[currentIndex].imgUrl"
+          />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList @changeCurrentIndex="changeCurrentIndex" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -78,13 +83,14 @@
               </dl>
             </div>
             <div class="cartWrap">
+              <!--商品数量的操作-->
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum" />
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum>1?skuNum--:''">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addToCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -334,7 +340,12 @@ export default {
     ImageList,
     Zoom,
   },
-
+  data() {
+    return {
+      currentIndex: 0, // 用来保存子级组件传递过来的索引值
+      skuNum: 1, // 商品的数量
+    }
+  },
   computed: {
     ...mapState({
       detailInfo: (state) => state.detail.detailInfo,
@@ -365,8 +376,73 @@ export default {
       })
       spuAttr.isChecked = '1'
     },
+    // 自定义事件的回调函数,用来获取子级组件(轮播图组件)传递过来的索引值,并且先保存起来
+    changeCurrentIndex(index) {
+      this.currentIndex = index
+    },
+    // 点击添加购物车按钮,实现路由的跳转及把商品添加到购物车的操作
+    addToCart1() {
+      // 准备路由的参数数据---商品的id和商品的数量
+      const query = { skuId: this.skuInfo.id, skuNum: this.skuNum }
+      // 调用api接口,实现真正的商品添加到后台的数据库中(调用api接口函数即可)---成功或者失败的效果
+
+      // 解决成功才调用,失败则不跳转,并且有失败的提示信息,
+      // 方式1: 使用回调函数来解决
+      this.$store.dispatch('addToCart', { ...query, callback: this.callback })
+
+      // 路由的跳转
+      // this.$router.push({ path: '/addcartsuccess', query })
+    },
+    // 添加购物车addToCart1方法中需要的回调函数
+    callback(errorMsg) {
+      // 判断errorMsg的值是空串还是非空字符串
+      if (!errorMsg) {
+        // 成功了
+        const query = { skuId: this.skuInfo.id, skuNum: this.skuNum }
+        this.$router.push({ path: '/addcartsuccess', query })
+      } else {
+        // 失败了
+        alert(errorMsg || '添加失败')
+      }
+    },
+    // 方式2: 使用async + await 的方式来解决
+    async addToCart() {
+      // 准备路由的参数数据---商品的id和商品的数量
+      const query = { skuId: this.skuInfo.id, skuNum: this.skuNum }
+      // 方式1: 使用的async
+      // 返回值是一个promise对象(没有使用async+await)
+      // 此时使用了async+await 的方式后,再去接收,得到的是消息数据
+      const errorMsg = await this.$store.dispatch('addToCart', query)
+      if (!errorMsg) {
+        // 把当前的商品信息对象保存在浏览器的缓存中了
+        window.localStorage.setItem('SKU_INFO',JSON.stringify(this.skuInfo))
+        // 路由的跳转
+        this.$router.push({ path: '/addcartsuccess', query })
+      } else {
+        alert(errorMsg || '添加失败')
+      }
+      // 路由的跳转
+      // this.$router.push({ path: '/addcartsuccess', query })
+    },
   },
 }
+// 一元运算符: 需要一个表达式就可以进行运算的符号(当前的这个符号可以直接进行运算操作的)  ++  --
+// 二元运算符: 需要两个表达式才可以进行运算的符号   +  -   *  /   复合运算符 +=  -=  *=  /=
+// 三元运算符: 需要三个表达式才可以进行元算的符号   ?:
+
+// 一元运算表达式: 由一元运算符连接起来的表达式   num++   ++num  num--  --num
+// 二元运算表达式: 由二元运算符连接起来的表达式   num1+num2
+// 三元运算表达式: 由三元运算符连接起来的表达式   表达式1?表达式2:表达式3
+// 如果代码中if-else有这种分支结构的代码,那么都可以尝试着使用三元运算表达式
+// 清楚的用法 max = num1>num2?num1:num2
+
+// 熟练使用
+// 需求: 求三个数字中的最大值
+// var num1=10;
+// var num2 = 40;
+// var num3 = 100
+// var max = num1>num2?(num1>num3?num1:num3):(num2>num3?num2:num3)
+// 公司中的项目里面:不是特别推荐多层的三元表达式嵌套使用---别人看不懂
 </script>
 
 <style lang="less" scoped>
