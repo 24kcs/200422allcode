@@ -34,3 +34,10 @@ export const reqShopCartList = () => ajax.get(`/cart/cartList`)
 export const reqCheckCartItem = (skuId, isChecked) => ajax.get(`/cart/checkCart/${skuId}/${isChecked}`)
 // 删除购物车中购物项
 export const reqDeleteCartItem = (skuId) => ajax.delete(`/cart/deleteCart/${skuId}`)
+
+// 登录的接口
+export const reqLogin = (mobile, password) => ajax.post(`/user/passport/login`, { mobile, password })
+// 注册的接口
+export const reqRegister = (userInfo) => ajax.post(`/user/passport/register`, userInfo)
+// 退出的接口
+export const reqLogout = () => ajax.get(`/user/passport/logout`)
