@@ -27,6 +27,11 @@ ajax.interceptors.request.use(config => {
   Nprogress.start()
   // 把用户的临时凭证嵌入到请求头中
   config.headers['userTempId'] = store.state.user.userTempId
+  // 在请求头中携带token数据
+  const token = store.state.user.userInfo.token
+  if (token) {
+    config.headers['token'] = token
+  }
   // 暂且先不做任何的请求头的处理
   return config
 })

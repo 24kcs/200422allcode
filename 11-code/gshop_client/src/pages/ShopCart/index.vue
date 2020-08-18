@@ -87,7 +87,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="javascript:;">结算</a>
+          <a class="sum-btn" href="javascript:;" @click="toTrade">结算</a>
         </div>
       </div>
     </div>
@@ -253,6 +253,11 @@ export default {
         })
       }
     },
+    // 去结算
+    toTrade(){
+      // 跳转到订单的界面()
+      this.$router.push('/trade')
+    }
   },
 }
 

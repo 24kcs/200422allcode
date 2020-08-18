@@ -18,6 +18,13 @@ import Carousel from '@/components/Carousel'
 import Pagination from '@/components/Pagination'
 // 引入validate.js文件,执行一次内部的代码
 import './utils/validate'
+
+// 引入所有的api接口函数
+import * as API from '@/api'
+// 所有的Vue的实例对象(每个组件对象都继承自Vue的实例)都可以直接调用$API使用内部的所有的api接口函数
+Vue.prototype.$API = API
+
+
 // 设置浏览器的控制台中的提示信息默认不显示
 Vue.config.productionTip = false
 // 注册全局组件(需要的使用的位置直接用即可)
