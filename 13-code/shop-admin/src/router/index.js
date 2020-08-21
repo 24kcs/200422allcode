@@ -84,7 +84,7 @@ export const lastRoute = {
 用于创建只注册常量路由的路由器的函数
 */
 const createRouter = () => new Router({
-  mode: 'hash', // 带#模式
+  mode: 'history', // 不带#模式
   scrollBehavior: () => ({ y: 0 }), // 切换路由自动滑动到顶部
   routes: constantRoutes // 默认只有常量路由, 其它权限路由后面动态添加
 })
