@@ -62,22 +62,55 @@ export const constantRoutes = [
       path: 'dashboard',
       name: '首页',
       component: () => import('@/views/dashboard/index'),
-      meta: { 
-        title: '首页', 
-        icon: 'dashboard' 
+      meta: {
+        title: '首页',
+        icon: 'dashboard'
       }
     }]
   },
+  // 注册路由组件-----组件之间通信的高级技术问题
+  {
+    path: '/review',
+    // 路由的懒加载
+    component: () => import('@/views/Review/Review'),
+    hidden: true,
+    children: [
+      {
+        path: 'event',
+        component: () => import('@/views/Review/EventTest/EventTest')
+      },
+      {
+        path: 'model',
+        component: () => import('@/views/Review/ModelTest/ModelTest')
+      },
+      {
+        path: 'sync',
+        component: () => import('@/views/Review/SyncTest/SyncTest')
+      },
+      {
+        path: 'attrs-listeners',
+        component: () => import('@/views/Review/AttrsListenersTest/AttrsListenersTest')
+      },
+      {
+        path: 'children-parent',
+        component: () => import('@/views/Review/ChildrenParentTest/ChildrenParentTest')
+      },
+      {
+        path: 'scope-slot',
+        component: () => import('@/views/Review/ScopeSlotTest/ScopeSlotTest')
+      }
+    ]
+  }
 ]
 
 /* 
 必须最后才注册的路由
 用于处理当请求路径没有一个匹配时, 自动跳转到404路由界面
 */
-export const lastRoute = { 
-  path: '*', 
-  redirect: '/404', 
-  hidden: true 
+export const lastRoute = {
+  path: '*',
+  redirect: '/404',
+  hidden: true
 }
 
 /* 
@@ -94,12 +127,12 @@ const router = createRouter()
 
 // 向外暴露重置路由器的matcher的函数
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
+export function resetRouter () {
   // 重新生成只包含常量路由的路由器
   const newRouter = createRouter()
 
   // 重置路由器的matcher(只包含常量路由)
-  router.matcher = newRouter.matcher 
+  router.matcher = newRouter.matcher
 }
 
 // 向外暴露路由器

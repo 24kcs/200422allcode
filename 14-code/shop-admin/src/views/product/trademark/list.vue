@@ -202,7 +202,6 @@ export default {
       this.$refs.ruleForm.validate(async (valid) => {
         if (valid) {
           // 表单验证全都成功了
-
           let result
           if (this.formTrademark.id) {
             // 修改
