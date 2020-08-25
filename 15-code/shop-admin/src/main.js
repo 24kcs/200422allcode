@@ -39,10 +39,12 @@ import * as API from '@/api'
 
 // 引入准备全局注册的组件
 import HintButton from '@/components/HintButton'
-import CategorySelector from '@/components/CategorySelector'
+// import CategorySelector from '@/components/CategorySelector'
+import CategorySelector from '@/views/product/components/CategorySelector'
 
 // 注册全局组件
 Vue.component('HintButton', HintButton)
+// 注册全局组件
 Vue.component('CategorySelector', CategorySelector)
 
 // 挂载到Vue原型对象上, 以便组件中直接可见

@@ -10,6 +10,9 @@ export {default as order} from './order'
 // =====================
 // 自己添加的
 export { default as trademark } from './product/trademark'
+// 导入 并 导出 平台属性接口模块
+export { default as attr } from './product/attr'
+
 
 
 /* {
