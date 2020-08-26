@@ -13,7 +13,7 @@ export default {
     return request.delete(`${API_NAME}/deleteSpu/${spuId}`)
   },
   // 根据spu的id获取对应的spu商品对象
-  getSpuInfoByspuId (spuId) {
+  getSpuInfoBySpuId (spuId) {
     return request.get(`${API_NAME}/getSpuById/${spuId}`)
   },
   // 添加或修改spu商品对象信息---参数是spu对象
