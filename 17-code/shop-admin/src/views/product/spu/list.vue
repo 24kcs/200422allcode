@@ -7,9 +7,14 @@
     <!--第二个卡片-->
     <el-card style="margin-top:20px;">
       <!--展示平台属性列表的界面-->
-      <div v-show="!isShowSpuForm">
+      <div v-show="!isShowSpuForm&&!isShowSkuForm">
         <!--按钮-->
-        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id">添加SPU</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          :disabled="!category3Id"
+          @click="showAddSpuForm"
+        >添加SPU</el-button>
         <!--表格-->
         <el-table :data="spuInfoList" style="width: 100%" border>
           <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
@@ -18,9 +23,15 @@
           <el-table-column label="操作">
             <template slot-scope="{row,$index}">
               <!--添加SKU-->
-              <HintButton title="添加SKU" type="primary" icon="el-icon-plus" size="mini" />
+              <HintButton title="添加SKU" type="primary" icon="el-icon-plus" size="mini" @click="showAddSkuForm(row)" />
               <!--修改SPU-->
-              <HintButton title="修改SPU" type="primary" icon="el-icon-edit" size="mini" @click="showUpdateSpuForm(row.id)" />
+              <HintButton
+                title="修改SPU"
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="showUpdateSpuForm(row.id)"
+              />
               <!--查看所有的SKU列表-->
               <HintButton title="查看SKU列表" type="info" icon="el-icon-info" size="mini" />
               <!--气泡对话框-->
@@ -50,28 +61,33 @@
         ></el-pagination>
       </div>
       <!--修改Spu的SpuForm组件-->
-      <SpuForm :visible.sync="isShowSpuForm" ref="spuForm" />
+      <SpuForm :visible.sync="isShowSpuForm" ref="spuForm" @saveSuccess="saveSuccess" />
+      <SkuForm v-show="isShowSkuForm" ref="skuForm" />
     </el-card>
   </div>
 </template>
 <script>
 // 引入SpuForm组件
 import SpuForm from '../components/SpuForm'
+import SkuForm from '../components/SkuForm'
 export default {
   name: 'SpuList',
   components: {
     SpuForm, // 注册组件
+    SkuForm
   },
   data() {
     return {
       spuInfoList: [], // 用来存储spu列表数据的
       page: 1, // 默认第一页
-      limit: 5, // 默认每页3条
+      limit: 3, // 默认每页3条
       total: 0, // 总条数数据
       category1Id: '', // 用来存储一级分类的id
       category2Id: '', // 用来存储二级分类的id
       category3Id: '', // 用来存储三级分类的id
-      isShowSpuForm:false // 设置当前SpuForm组件界面显示或者隐藏
+      isShowSpuForm: false, // 设置当前SpuForm组件界面显示或者隐藏
+      spuId:'' , // 点击修改按钮的时候保存的spuId
+      isShowSkuForm:true // 设置当前SkuForm组件界面显示或者隐藏
     }
   },
   methods: {
@@ -136,11 +152,30 @@ export default {
       }
     },
     // 点击修改按钮,显示修改SpuForm组件界面
-    showUpdateSpuForm(spuId){
+    showUpdateSpuForm(spuId) {
+      // 保存spuId
+      this.spuId = spuId
       // 设置SpuForm组件显示
       this.isShowSpuForm = true
       // 调用SpuForm组件中的方法----发送4个请求(获取SpuInfo对象,获取所有的品牌列表信息数据,获取所有的销售属性列表数据,获取当前的spuInfo对象对应的图片列表数据)
       this.$refs.spuForm.initSpuFormData(spuId)
+    },
+    // 子级组件中需要分发的这个父级组件中的自定义事件---目的:刷新界面(重新获取数据)
+    saveSuccess() {
+      if (this.spuId) {
+        this.getSpuInfoList(this.page)
+      } else {
+        this.getSpuInfoList()
+      }
+    },
+    // 点击按钮实现添加SPU操作
+    showAddSpuForm() {
+      this.isShowSpuForm = true
+      this.$refs.spuForm.initSpuFormAddData(this.category3Id)
+    },
+    // 点击按钮添加Sku操作
+    showAddSkuForm(){
+      this.isShowSkuForm = true
     }
   },
 }

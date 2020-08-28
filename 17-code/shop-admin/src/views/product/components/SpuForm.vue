@@ -46,11 +46,16 @@
         <el-option
           v-for="(attr,index) in unSelectedSaleAttrList"
           :label="attr.name"
-          :value="attr.id"
+          :value="attr.id+'_'+attr.name"
           :key="attr.id"
         ></el-option>
       </el-select>
-      <el-button type="primary" icon="el-icon-plus" :disabled="!attrIdAttrName">添加销售属性</el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        :disabled="!attrIdAttrName"
+        @click="addSaleAttr"
+      >添加销售属性</el-button>
       <!--表格-->
       <el-table :data="spuInfo.spuSaleAttrList" style="width: 100%;margin-top:20px" border>
         <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
@@ -79,14 +84,20 @@
         </el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="{row,$index}">
-            <HintButton title="删除" type="danger" icon="el-icon-delete" size="mini" @click="deleteAttr($index)" />
+            <HintButton
+              title="删除"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteAttr($index)"
+            />
           </template>
         </el-table-column>
       </el-table>
     </el-form-item>
     <!--two 个 按钮-->
     <el-form-item>
-      <el-button type="primary">保存</el-button>
+      <el-button type="primary" @click="saveSpuInfo">保存</el-button>
       <el-button @click="back">取消</el-button>
     </el-form-item>
   </el-form>
@@ -101,7 +112,12 @@ export default {
       dialogVisible: false, // 是否预览
       spuId: null, // 用来存储spu的id的
       spuInfo: {
-        spuSaleAttrList: [], // 当前的spuInfo中的销售属性数组
+        category3Id: '', // 三级分类的id(添加spu向哪个三级的分类中添加)
+        description: '', // 描述
+        spuImageList: [], // 图片数组
+        spuName: '', // 名字
+        spuSaleAttrList: [], //销售属性
+        tmId: '', // 品牌的id
       }, // 保存spu商品信息对象
       trademarkList: [], // 保存所有品牌列表信息数据
       saleAttrList: [], // 保存所有的销售属性列表信息数据
@@ -175,12 +191,6 @@ export default {
       }
     },
 
-    // 取消
-    back() {
-      // this.visible = false
-      // 分发update事件
-      this.$emit('update:visible', false)
-    },
     // 删除上传的图片的操作
     handleRemove(file, fileList) {
       this.spuImageList = fileList
@@ -244,9 +254,96 @@ export default {
       attr.saleAttrValueName = ''
     },
     // 删除当前这一行的这个销售属性对象
-    deleteAttr(index){
-      this.spuInfo.spuSaleAttrList.splice(index,1)
-    }
+    deleteAttr(index) {
+      this.spuInfo.spuSaleAttrList.splice(index, 1)
+    },
+    // 添加添加销售属性按钮,把当前选中的销售属性(对象)添加到spuInfo中的spuSaleAttrList数组中
+    addSaleAttr() {
+      // 取出下拉框中选中的销售属性的id和名字
+      const [baseSaleAttrId, saleAttrName] = this.attrIdAttrName.split('_')
+      this.spuInfo.spuSaleAttrList.push({
+        baseSaleAttrId, // 当前的销售属性的id
+        saleAttrName, // 当前的销售属性的名字
+        spuSaleAttrValueList: [], // 属性值数组
+      })
+      // 清空
+      this.attrIdAttrName = ''
+    },
+
+    // 保存操作---添加SPU或者修改SPU
+    async saveSpuInfo() {
+      // 准备参数
+      const { spuInfo, spuImageList } = this
+      // 过滤所需的参数
+
+      // 图片列表数组中的数据需要过滤
+      spuInfo.spuImageList = spuImageList.map((item) => ({
+        imgName: item.name,
+        imgUrl: item.response ? item.response.data : item.url,
+      }))
+      // console.log(spuInfo.spuImageList)
+      // console.log(spuInfo.spuSaleAttrList)
+      // 销售属性的列表数据也需要过滤
+      spuInfo.spuSaleAttrList = spuInfo.spuSaleAttrList.filter((item) => {
+        // 判断属性值列表数组中有没有数据,如果有数据,那么再删除
+        if (item.spuSaleAttrValueList.length > 0) {
+          // 干掉edit
+          delete item.edit
+          // 干掉saleAttrValueName
+          delete item.saleAttrValueName
+          return true
+        }
+        return false
+      })
+
+      // 调用接口
+      const result = await this.$API.spu.saveOrUpdateSpuInfo(spuInfo)
+      if (result.code === 200) {
+        // 提示信息
+        this.$message.success('保存成功了')
+        // 关闭当前界面,回到主界面
+        this.$emit('update:visible', false)
+        // 重新加载主界面的数据
+        this.$emit('saveSuccess')
+        // 重置当前界面的数据
+        this.resetData()
+      } else {
+        this.$message.error('保存失败了')
+      }
+    },
+    // 取消
+    back() {
+      // this.visible = false
+      // 分发update事件
+      this.$emit('update:visible', false)
+    },
+    // 重置数据的方法
+    resetData() {
+      this.dialogImageUrl = '' // 预览图片的地址
+      this.dialogVisible = false // 是否预览
+      this.spuId = null // 用来存储spu的id的
+      this.spuInfo = {
+        category3Id: '', // 三级分类的id(添加spu向哪个三级的分类中添加)
+        description: '', // 描述
+        spuImageList: [], // 图片数组
+        spuName: '', // 名字
+        spuSaleAttrList: [], //销售属性
+        tmId: '', // 品牌的id
+      } // 保存spu商品信息对象
+      this.trademarkList = [] // 保存所有品牌列表信息数据
+      this.saleAttrList = [] // 保存所有的销售属性列表信息数据
+      this.spuImageList = [] //  保存当前Spu的图片列表信息数据
+      this.attrIdAttrName = '' // 用来保存销售属性数据的id
+    },
+    // 点击添加Spu按钮后 显示当前这个SPuForm界面的时候的初始化数据的方法(所有的品牌和所有的销售属性)
+    initSpuFormAddData(category3Id) {
+      // 保存这个三级分类的id
+      this.spuInfo.category3Id = category3Id
+      // 获取所有的品牌
+      this.getTrademarkList()
+      // 获取所有的销售属性
+      this.getSaleAttrList()
+    },
   },
 }
 
