@@ -39,7 +39,13 @@
                 @click="showUpdateSpuForm(row.id)"
               />
               <!--查看所有的SKU列表-->
-              <HintButton title="查看SKU列表" type="info" icon="el-icon-info" size="mini" />
+              <HintButton
+                title="查看SKU列表"
+                type="info"
+                icon="el-icon-info"
+                size="mini"
+                @click="showSkuList(row)"
+              />
               <!--气泡对话框-->
               <el-popconfirm :title="`确定要删除吗?`" @onConfirm="deleteSpu(row.id)">
                 <HintButton
@@ -68,8 +74,26 @@
       </div>
       <!--修改Spu的SpuForm组件-->
       <SpuForm :visible.sync="isShowSpuForm" ref="spuForm" @saveSuccess="saveSuccess" />
-      <SkuForm v-show="isShowSkuForm" ref="skuForm" />
+      <SkuForm
+        v-show="isShowSkuForm"
+        ref="skuForm"
+        @success="()=>isShowSkuForm=false"
+        @cancel="()=>isShowSkuForm=false"
+      />
     </el-card>
+
+    <el-dialog :title="`${spuName} => SKU列表`" :visible.sync="isShowSkuList">
+      <el-table :data="skuList">
+        <el-table-column property="skuName" label="名称" width="150"></el-table-column>
+        <el-table-column property="price" label="价格(元)" width="200"></el-table-column>
+        <el-table-column property="weight" label="重量(千克)"></el-table-column>
+        <el-table-column label="图片">
+          <template slot-scope="{row,$index}">
+            <img :src="row.skuDefaultImg" alt="suibian" width="100" height="100" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -94,6 +118,9 @@ export default {
       isShowSpuForm: false, // 设置当前SpuForm组件界面显示或者隐藏
       spuId: '', // 点击修改按钮的时候保存的spuId
       isShowSkuForm: false, // 设置当前SkuForm组件界面显示或者隐藏
+      spuName: '', // 保存当前的Sku列表对应的spu商品的名字
+      skuList: [], // 保存的是当前的spu中对应的所有的sku列表数据--数组
+      isShowSkuList: false, // 显示或者隐藏当前spu对应的sku列表
     }
   },
   methods: {
@@ -191,6 +218,20 @@ export default {
       // 直接调用SkuForm组件对象中的相关初始化数据的方法,从而实现获取所有的平台属性、销售属性、图片列表数据
       this.$refs.skuForm.initAddData(spuInfo)
     },
+    // 显示或者隐藏当前的spu对应的sku列表对话框
+    async showSkuList(spuInfo) {
+      this.spuName = spuInfo.spuName
+      this.isShowSkuList = true
+      const result = await this.$API.sku.getSkuInfoListBySpuId(spuInfo.id)
+      if (result.code === 200) {
+        this.skuList = result.data
+      }
+    },
+
+    // 自定义事件---在SkuForm组件中保存成功调用的事件的回调函数
+    // success(){
+    //   this.isShowSkuForm = false
+    // }
   },
 }
 </script>
